@@ -10,7 +10,7 @@ def cartesian_to_euclidean_distance(x, y, z):
 
     Parameters
     ----------
-    x, y, z: float, float, float
+    x, y, z: numerical
         x-, y- and z-coordinates
 
     Returns
@@ -29,7 +29,7 @@ def helio_to_galacto(dist_kpc, glon, glat=0.0, cartesian=True):
     ----------
     dist_kpc: float
         Heliocentric distance (kpc)
-    glon, glat: float, float
+    glon, glat: float, float (optional)
         Galactic longitude and latitude (decimal degrees). Galactic latitude is
         set to 0 as default.
     cartesian: bool
@@ -38,8 +38,8 @@ def helio_to_galacto(dist_kpc, glon, glat=0.0, cartesian=True):
 
     Returns
     -------
-    Either galactocentric cartesian coordinate (default) or
-    galactocentric distance
+    Either galactocentric cartesian coordinate (tuple) or
+    galactocentric distance (float)
     """
 
     solar_dist = 8.15*u.kpc  # 8.15 kpc from GC
@@ -64,12 +64,14 @@ def helio_to_galacto(dist_kpc, glon, glat=0.0, cartesian=True):
 class ConvertUnit:
     """
     Convert a coordinate to other system and/or unit. Can also change the frame
-    from icrs to fk5 or fk4, though not encouraged.
+    from icrs to fk5 or fk4 if needed.
 
     Attributes
     ----------
     xcoord, ycoord: str/ list of string, str/ list of string
-        x- and y- coordinate. Ideally RA and DEC (hour angle)
+        x- and y- coordinate. By default RA and DEC (hour angle); else,
+        need to reset self.unit and self.frame.
+        See astropy.coordinates.SkyCoord for setting options
     unit: str, tuple
         Units for supplied coordinate values. If only one unit is supplied, it
         will be applied to all values
@@ -119,8 +121,3 @@ class ConvertUnit:
         """
         return self.skycoordobj.galactic.l.value, \
             self.skycoordobj.galactic.b.value
-
-
-if __name__ == "__main__":
-    print(ConvertUnit(['12:28:35.74'], ['-62:58:35.4']).to_eq_deg())
-    print(ConvertUnit('12:28:35.74', '-62:58:35.4').to_eq_deg())
