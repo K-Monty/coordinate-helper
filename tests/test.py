@@ -1,9 +1,14 @@
+import os
+import sys
 import unittest
 
-from transformations import cartesian_to_euclidean_distance
-from transformations import helio_to_galacto
-from transformations import ConvertUnit
-from kdist import kdist
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),  # noqa
+                                                '..')))
+
+from coordinate_helper.transformations import cartesian_coord_to_euclidean_distance  # noqa
+from coordinate_helper.transformations import galactic_helio_to_galacto  # noqa
+from coordinate_helper.transformations import ConvertUnit  # noqa
+from coordinate_helper.kdist import kdist  # noqa
 
 
 class TestKdist(unittest.TestCase):
@@ -39,21 +44,22 @@ class TestCoordinateConversions(unittest.TestCase):
 
 class TestHelioToGalacto(unittest.TestCase):
     def test_with_and_without_glat(self):
-        self.assertNotEqual(helio_to_galacto(1.32, 351.416778966),
-                            helio_to_galacto(1.32, 351.416778966, 0.645254241))
+        self.assertNotEqual(galactic_helio_to_galacto(1.32, 351.416778966),
+                            galactic_helio_to_galacto(1.32, 351.416778966,
+                                                      0.645254241))
 
     def test_string_arg(self):
-        self.assertRaises(TypeError, helio_to_galacto, (1.32, '351.416778966'))
+        self.assertRaises(TypeError, galactic_helio_to_galacto, (1.32,
+                          '351.416778966'))
 
     def test_cartesian_bool(self):
-        self.assertEqual(len(helio_to_galacto(1.32, 351.416778966)), 3)
-        self.assertEqual(len([helio_to_galacto(1.32, 351.416778966,
-                                               cartesian=False)]), 1)
+        self.assertEqual(len(galactic_helio_to_galacto(1.32, 351.416778966)
+                             ), 3)
+        self.assertEqual(len([galactic_helio_to_galacto(
+            1.32, 351.416778966,)]), 1)
 
     def test_conversion_values(self):
-        self.assertEqual(round(helio_to_galacto(1.32, 351.416778966,
-                                                cartesian=False), 2), 6.85)
-        test_case = helio_to_galacto(1.32, 351.416778966, 0.645254241)
+        test_case = galactic_helio_to_galacto(1.32, 351.416778966, 0.645254241)
         self.assertEqual(round(test_case[0], 2), -0.20)
         self.assertEqual(round(test_case[1], 2), 6.84)
         self.assertEqual(round(test_case[2], 2), 0.02)
@@ -61,10 +67,11 @@ class TestHelioToGalacto(unittest.TestCase):
 
 class TestCartesianToEuclidean(unittest.TestCase):
     def test_dist(self):
-        self.assertEqual(cartesian_to_euclidean_distance(1, 1, 1), (3)**0.5)
+        self.assertEqual(cartesian_coord_to_euclidean_distance(1, 1, 1),
+                         (3)**0.5)
 
     def test_string_arg(self):
-        self.assertRaises(TypeError, cartesian_to_euclidean_distance,
+        self.assertRaises(TypeError, cartesian_coord_to_euclidean_distance,
                           ('1', '1', '1'))
 
 

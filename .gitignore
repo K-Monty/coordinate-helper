@@ -1,2 +1,5 @@
 __pycache__/
 coordinate_helper_venv/
+*__init__.py
+.vscode/
+*.git/

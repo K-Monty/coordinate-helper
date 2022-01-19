@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+# credit of this module: https://zenodo.org/record/1166001#.Yegjvvgo9PY
+# flake8: noqa
+
 from astropy import coordinates as coords
 import astropy.units as u
 from numpy import sqrt, abs, cos, sin, max
@@ -5,7 +10,7 @@ from warnings import warn
 import numpy as np
 
 
-def kdist(l, b, vin, near=True, r0=8.15e3, v0=2.47e2,
+def kdist(l, b, vin, near=True, r0=8.15e3, v0=2.47e2,  
           dynamical=False, kinematic=True, regular=False, rrgal=False,
           verbose=False, inverse=False, silent=False, returnvtan=False):
     """
@@ -62,7 +67,7 @@ def kdist(l, b, vin, near=True, r0=8.15e3, v0=2.47e2,
         solarmotion_mag = 16.55294
 
     if not hasattr(l, 'unit') or not hasattr(b, 'unit'):
-        l = np.array(l)*u.deg
+        l = np.array(l)*u.deg  
         b = np.array(b)*u.deg
     cg = coords.Galactic(l, b)
     solarmotion = coords.ICRS(solarmotion_ra*u.deg, solarmotion_dec*u.deg)

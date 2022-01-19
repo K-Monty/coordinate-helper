@@ -1,9 +1,21 @@
+#!/usr/bin/env python
+
+# Module level dunder names
+__author__ = 'K-Monty'
+__copyright__ = 'Copyright 2022,coordinate-helper'
+__license__ = 'GNU v3'
+__version__ = '0.1.0'
+__maintainer__ = 'K-Monty'
+__email__ = 'kmgoh1995@gmail.com'
+
+
+from numbers import Number
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 import astropy.coordinates as coord
 
 
-def cartesian_to_euclidean_distance(x, y, z):
+def cartesian_coord_to_euclidean_distance(x: Number, y: Number, z: Number):
     """
     A simple function converting 3D cartesian coordinate into
     euclidean distance
@@ -20,26 +32,23 @@ def cartesian_to_euclidean_distance(x, y, z):
     return ((x ** 2) + (y ** 2) + (z ** 2))**0.5
 
 
-def helio_to_galacto(dist_kpc, glon, glat=0.0, cartesian=True):
+def galactic_helio_to_galacto(dist_kpc: Number, glon: Number, glat=0.0):
     """
-    Convert coordinate from heliocentric to galactocentric system, given its
-    heliocentric distance, galactic longitude and galactic latitude (optional).
+    Convert coordinate from (galactic) heliocentric to galactocentric
+    coordinate system, given its heliocentric distance,
+    galactic longitude and galactic latitude (optional).
 
     Parameters
     ----------
-    dist_kpc: float
+    dist_kpc: Number
         Heliocentric distance (kpc)
-    glon, glat: float, float (optional)
-        Galactic longitude and latitude (decimal degrees). Galactic latitude is
+    glon, glat: Number, Number (optional)
+        Galactic longitude and latitude (decimal deg). Galactic latitude is
         set to 0 as default.
-    cartesian: bool
-        If set to True, return cartesian coordinate; else, return
-        galactocentric distance
 
     Returns
     -------
-    Either galactocentric cartesian coordinate (tuple) or
-    galactocentric distance (float)
+    Galactocentric cartesian coordinate (tuple)
     """
 
     solar_dist = 8.15*u.kpc  # 8.15 kpc from GC
@@ -52,24 +61,20 @@ def helio_to_galacto(dist_kpc, glon, glat=0.0, cartesian=True):
     c_galacto = c.transform_to(coord.Galactocentric(
                                             galcen_distance=solar_dist,
                                             z_sun=z_sun))
-    if cartesian is True:
-        # y.value in SkyCoord is x-axis in our system, and vice versa.
-        return c_galacto.y.value, -c_galacto.x.value, c_galacto.z.value
-    else:
-        return cartesian_to_euclidean_distance(c_galacto.y.value,
-                                               -c_galacto.x.value,
-                                               c_galacto.z.value)
+
+    # y.value in SkyCoord is x-axis in my galaxy model, and vice versa.
+    return c_galacto.y.value, -c_galacto.x.value, c_galacto.z.value
 
 
 class ConvertUnit:
     """
     Convert a coordinate to other system and/or unit. Can also change the frame
-    from icrs to fk5 or fk4 if needed.
+    from icrs (default) to fk5 or fk4 if needed.
 
     Attributes
     ----------
-    xcoord, ycoord: str/ list of string, str/ list of string
-        x- and y- coordinate. By default RA and DEC (hour angle); else,
+    xcoord, ycoord: str/ list of string, str/ list of string of x- and y-
+        coordinate. The default input is RA and DEC (hourangle); otherwise,
         need to reset self.unit and self.frame.
         See astropy.coordinates.SkyCoord for setting options
     unit: str, tuple
@@ -86,8 +91,8 @@ class ConvertUnit:
         convert the coordinate to galactic system (deg)
     """
 
-    def __init__(self, xcoord, ycoord, unit=(u.hourangle, u.deg),
-                 frame='icrs'):
+    def __init__(self, xcoord, ycoord, unit=(u.hourangle,
+                 u.deg), frame='icrs'):
         self.xcoord = xcoord
         self.ycoord = ycoord
         self.unit = unit
